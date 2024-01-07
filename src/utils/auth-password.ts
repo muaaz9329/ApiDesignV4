@@ -1,34 +1,18 @@
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 
-export const hashPassword = async (password: string): Promise<string> => {
-  let hashedPass;
-  bcrypt.hash(password, Number(process.env.BCRYPT_SALT), (err, hash) => {
-    if (err) {
-      throw new Error(err.message);
-    } else {
-      hashedPass = hash;
-    }
-  });
-
-  if (hashedPass) {
-    return hashedPass;
-  } else {
-    throw new Error("Password not hashed");
-  }
+export const hashPassword = async (password: string) => {
+  const hashedPass = await bcrypt.hash(
+    password,
+    Number(process.env.BCRYPT_SALT)
+  );
+  return hashedPass;
 };
 
 export const comparePassword = async (
   password: string,
   hash: string
 ): Promise<boolean> => {
-  let match;
-  bcrypt.compare(password, hash, (err, result) => {
-    if (err) {
-      throw new Error(err.message);
-    } else {
-      match = result;
-    }
-  });
+  const match = await bcrypt.compare(password, hash);
 
   if (match) {
     return match;

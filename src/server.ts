@@ -1,24 +1,25 @@
 import express, { Express } from "express";
-import router from "./router";
-import morgan from "morgan";
-import cors from "cors";
-import { validationMiddleware } from "./middleware/validation.middleware";
+import router from "./routes";
+import globalMiddlewares from "./middleware/global.middleware";
+import errorHandler from "./middleware/error-handler";
+
+//*constants
 const app: Express = express();
 
-//middleware
-app.use(morgan("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors());
 
-//routes
+//*Global middleware
+app.use(globalMiddlewares)
+
+//* Index routes
 app.get("/", (req, res) => {
-  console.log("Hello from express");
-
-  res.status(200);
-  res.json({ message: "hello" });
+  throw new Error("Error thrown from index route");
 });
 
-app.use("/api", validationMiddleware, router);
+//* Routes
+app.use(router);
+
+//* Error handler
+
+app.use(errorHandler)
 
 export default app;
